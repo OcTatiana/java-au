@@ -9,6 +9,7 @@
 
 
 ## Get Words By Length
+
 A string is given, and you have to find all the words (substrings separated by a space) which are greater than the given length 5.
 
 <details><summary>Test Cases</summary><blockquote>
@@ -28,7 +29,9 @@ class SolutionTest {
 
     @org.junit.jupiter.api.Test
     void testGetWordsByLength() {
-        assertEquals(sol.getWordsByLength("one twoooo three fourrrr"), List.of("twoooo", "fourrrr"));
+        String input = "one twoooo three fourrrr";
+        List<String> expected = List.of("twoooo", "fourrrr");
+        assertEquals(expected, sol.getWordsByLength(input));
     }
 }
 ```
@@ -43,6 +46,7 @@ public List<String> getWordsByLength(String sentence) {
             .collect(Collectors.toList());
 }
 ```
+
 
 ## Get Reverse Words
 
