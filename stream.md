@@ -137,6 +137,130 @@ public List<Map.Entry<Integer, Integer>> getDistanceSorted(List<Integer> x, List
 
 ## Get Top 10
 
+Return Top 10 posts in a feed.
+
+<details><summary>Test Cases</summary><blockquote>
+
+Test:
+``` java
+import org.junit.jupiter.api.BeforeEach;
+import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+class SolutionTest {
+    private Solution sol;
+
+    @BeforeEach
+    void setUp() {
+        sol = new Solution();
+    }
+
+    @org.junit.jupiter.api.Test
+    void testGetDistanceSorted() {
+        List<Post> feed = createFeed(11);
+        List<Comment> comments = List.of(new Comment());
+        List<Post> expected = List.of(
+                new Post(11, comments),
+                new Post(10, comments),
+                new Post(9, comments),
+                new Post(8, comments),
+                new Post(7, comments),
+                new Post(6, comments),
+                new Post(5, comments),
+                new Post(4, comments),
+                new Post(3, comments),
+                new Post(2, comments)
+                );
+        System.out.println(feed);
+        assertEquals(expected, sol.getTop10(feed));
+    }
+
+    List<Post> createFeed(int length) {
+        List<Post> feed = new ArrayList<>();
+
+        for (int i = 0; i < length; i++) {
+            List<Comment> comments = List.of(new Comment());
+            Post post = new Post(length - i, comments);
+            feed.add(post);
+        }
+
+        return feed;
+    }
+}
+```
+
+Post:
+``` java
+import java.util.List;
+import java.util.Objects;
+
+public class Post {
+    private int id;
+    private int likes;
+    private String text;
+    private long authorId;
+    private List<Comment> comments;
+
+    Post (int likes, List<Comment> comments) {
+        this.likes = likes;
+        this.comments = comments;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id == post.id && getLikes() == post.getLikes() && authorId == post.authorId && Objects.equals(text, post.text) && Objects.equals(getComments(), post.getComments());
+    }
+}
+```
+
+Comment:
+``` java
+import java.util.Objects;
+
+public class Comment {
+    private int id;
+    private String text;
+    private long authorId;
+
+    Comment() {}
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id && authorId == comment.authorId && Objects.equals(text, comment.text);
+    }
+}
+```
+
+</blockquote></details>
+
+
+``` java
+public List<Post> getTop10(List<Post> feed) {
+    return feed.stream()
+            .sorted((o1, o2) -> {
+                Integer rank1 = o1.getLikes() + o1.getComments().size();
+                Integer rank2 = o2.getLikes() + o2.getComments().size();
+                return rank2.compareTo(rank1);
+            })
+            .limit(10)
+            .collect(Collectors.toList());
+}
+```
+
 
 ## Get Authors With Posts
 
