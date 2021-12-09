@@ -156,7 +156,7 @@ class SolutionTest {
     }
 
     @org.junit.jupiter.api.Test
-    void testGetDistanceSorted() {
+    void testGetTop10() {
         List<Post> feed = createFeed(11);
         List<Comment> comments = List.of(new Comment());
         List<Post> expected = List.of(
@@ -283,7 +283,7 @@ class SolutionTest {
     }
 
     @org.junit.jupiter.api.Test
-    void testGetDistanceSorted() {
+    void testGetAuthorsWithPosts() {
         List<Post> feed = createFeed(2);
         
         Long id1 = Long.valueOf(1);
@@ -378,7 +378,7 @@ public class Comment {
 
 
 ``` java
-public Map<Long, Set<Post>> getAuthorsWithPosts (List<Post> feed){
+public Map<Long, Set<Post>> getAuthorsWithPosts(List<Post> feed){
     return feed
             .stream()
             .flatMap(post -> post.getComments().stream().map(c -> Map.entry(c.getAuthorId(), post)))
