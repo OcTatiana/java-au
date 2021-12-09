@@ -264,6 +264,130 @@ public List<Post> getTop10(List<Post> feed) {
 
 ## Get Authors With Posts
 
+Return author's ID and posts he commented on.
+
+<details><summary>Test Cases</summary><blockquote>
+
+Test:
+``` java
+import org.junit.jupiter.api.BeforeEach;
+import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+class SolutionTest {
+    private Solution sol;
+
+    @BeforeEach
+    void setUp() {
+        sol = new Solution();
+    }
+
+    @org.junit.jupiter.api.Test
+    void testGetDistanceSorted() {
+        List<Post> feed = createFeed(2);
+        
+        Long id1 = Long.valueOf(1);
+        Long id2 = Long.valueOf(2);
+        Long id3 = Long.valueOf(3);
+        Post post1 = new Post(List.of(new Comment(id1), new Comment(id1), new Comment(id2)));
+        Post post2 = new Post(List.of(new Comment(id2), new Comment(id2), new Comment(id3)));
+        Set<Post> posts1 = Set.of(post1);
+        Set<Post> posts2 = Set.of(post1, post2);
+        Set<Post> posts3 = Set.of(post2);
+
+        Map<Long, Set<Post>> expected = Map.of(id1, posts1, id2, posts2, id3, posts3);
+        assertEquals(expected, sol.getAuthorsWithPosts(feed));
+    }
+
+    List<Post> createFeed(int length) {
+        List<Post> feed = new ArrayList<>();
+
+        for (int i = 0; i < length; i++) {
+            List<Comment> comments = List.of(new Comment((long)i+1), new Comment((long)i+1), new Comment((long)i+2));
+            Post post = new Post(comments);
+            feed.add(post);
+        }
+
+        return feed;
+    }
+}
+```
+
+Post:
+``` java
+import java.util.List;
+import java.util.Objects;
+
+public class Post {
+    private int id;
+    private int likes;
+    private String text;
+    private long authorId;
+    private List<Comment> comments;
+
+    Post (List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id == post.id && getLikes() == post.getLikes() && authorId == post.authorId && Objects.equals(text, post.text) && Objects.equals(getComments(), post.getComments());
+    }
+}
+```
+
+Comment:
+``` java
+import java.util.Objects;
+
+public class Comment {
+    private int id;
+    private String text;
+    private long authorId;
+
+    Comment (long authorId) {
+        this.authorId = authorId;
+    }
+
+    public long getAuthorId() {
+        return authorId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Comment comment = (Comment) o;
+        return id == comment.id && authorId == comment.authorId && Objects.equals(text, comment.text);
+    }
+}
+```
+
+</blockquote></details>
+
+
+``` java
+public Map<Long, Set<Post>> getAuthorsWithPosts (List<Post> feed){
+    return feed
+            .stream()
+            .flatMap(post -> post.getComments().stream().map(c -> Map.entry(c.getAuthorId(), post)))
+            .collect(Collectors
+                    .groupingBy(Map.Entry::getKey, Collectors.
+                            mapping(Map.Entry::getValue, Collectors.toSet())));
+    }
+```
+
 
 ## Top K Frequent Words
 
